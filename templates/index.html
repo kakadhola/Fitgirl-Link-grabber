@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        /* From Uiverse.io by cssbuttons-io */ 
+        button {
+            appearance: button;
+            background-color: #1899D6;
+            border: solid transparent;
+            border-radius: 16px;
+            border-width: 0 0 4px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            line-height: 20px;
+            margin: 0;
+            outline: none;
+            overflow: visible;
+            padding: 13px 19px;
+            text-align: center;
+            text-transform: uppercase;
+            touch-action: manipulation;
+            transform: translateZ(0);
+            transition: filter .2s;
+            user-select: none;
+            -webkit-user-select: none;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        button:after {
+            background-clip: padding-box;
+            background-color: #1CB0F6;
+            border: solid transparent;
+            border-radius: 16px;
+            border-width: 0 0 4px;
+            bottom: -4px;
+            content: "";
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: -1;
+        }
+
+        button:main, button:focus {
+            user-select: auto;
+        }
+
+        button:hover:not(:disabled) {
+            filter: brightness(1.1);
+        }
+
+        button:disabled {
+            cursor: auto;
+        }
+
+        button:active:after {
+            border-width: 0 0 0px;
+        }
+
+        button:active {
+            padding-bottom: 10px;
+        }
+        #loadingBarContainer {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            display: none; /* Initially hidden */
+        }
+        #loadingBar {
+            width: 0;
+            height: 10px;
+            background-color: #007BFF;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <h1>Link Converter</h1>
+
+    <label for="inputBox">Input URLs (one per line):</label>
+    <textarea id="inputBox" placeholder="Paste your URLs here..."></textarea>
+
+    <div id="loadingBarContainer">
+        <div id="loadingBar"></div>
+    </div>
+
+    <label for="outputBox">Converted Direct Links:</label>
+    <textarea id="outputBox" placeholder="Converted links will appear here..." readonly></textarea>
+
+    <button onclick="convertLinks()">Convert Links</button>
+    <button onclick="copyOutput()">Copy Output</button>
+
+    <script>
+        async function convertLinks() {
+            const inputBox = document.getElementById('inputBox');
+            const outputBox = document.getElementById('outputBox');
+            const loadingBarContainer = document.getElementById('loadingBarContainer');
+            const loadingBar = document.getElementById('loadingBar');
+
+            const urls = inputBox.value.trim().split('\n');
+            if (urls.length === 0) {
+                alert('Please enter URLs to process.');
+                return;
+            }
+
+            outputBox.value = ''; // Clear previous output
+            loadingBarContainer.style.display = 'block'; // Show loading bar
+            loadingBar.style.width = '0%'; // Reset loading bar
+
+            for (let i = 0; i < urls.length; i++) {
+                const url = urls[i].trim();
+                if (url === '') continue;
+
+                try {
+                    const response = await fetch('/process', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ urls: [url] })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        outputBox.value += data.results[0] + '\n';
+                    } else {
+                        outputBox.value += `Error processing ${url}\n`;
+                    }
+                } catch (error) {
+                    outputBox.value += `Error processing ${url}: ${error.message}\n`;
+                }
+
+                // Update loading bar
+                const progress = ((i + 1) / urls.length) * 100;
+                loadingBar.style.width = `${progress}%`;
+            }
+
+            // Hide loading bar after completion
+            setTimeout(() => {
+                loadingBarContainer.style.display = 'none';
+            }, 500);
+        }
+
+        function copyOutput() {
+            const outputBox = document.getElementById('outputBox');
+            outputBox.select();
+            outputBox.setSelectionRange(0, 99999); // For mobile devices
+            document.execCommand('copy');
+            alert('Output copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
