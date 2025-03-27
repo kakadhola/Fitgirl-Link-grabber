@@ -96,6 +96,11 @@
             background-color: #007BFF;
             transition: width 0.3s ease;
         }
+        #visitorCounter {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -116,7 +121,29 @@
     <button onclick="convertLinks()">Convert Links</button>
     <button onclick="copyOutput()">Copy Output</button>
 
+    <!-- Visitor Counter Display -->
+    <div id="visitorCounter"></div>
+
     <script>
+        // Function to update the visitor count
+        function updateVisitorCount() {
+            if (typeof(Storage) !== "undefined") {
+                let visitCount = localStorage.getItem('page_view');
+                if (visitCount) {
+                    visitCount = Number(visitCount) + 1;
+                } else {
+                    visitCount = 1;
+                }
+                localStorage.setItem('page_view', visitCount);
+                document.getElementById('visitorCounter').innerText = `You have visited this page ${visitCount} time(s).`;
+            } else {
+                document.getElementById('visitorCounter').innerText = "Sorry, your browser does not support web storage...";
+            }
+        }
+
+        // Call the function to update and display the visitor count
+        updateVisitorCount();
+
         async function convertLinks() {
             const inputBox = document.getElementById('inputBox');
             const outputBox = document.getElementById('outputBox');
