@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Converter</title>
+    <title>Link Converter with Visitor Counter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,67 +18,23 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        /* From Uiverse.io by cssbuttons-io */ 
         button {
             appearance: button;
             background-color: #1899D6;
             border: solid transparent;
             border-radius: 16px;
             border-width: 0 0 4px;
-            box-sizing: border-box;
             color: #FFFFFF;
             cursor: pointer;
-            display: inline-block;
             font-size: 15px;
             font-weight: 700;
-            letter-spacing: .8px;
-            line-height: 20px;
             margin: 0;
-            outline: none;
-            overflow: visible;
             padding: 13px 19px;
-            text-align: center;
             text-transform: uppercase;
-            touch-action: manipulation;
-            transform: translateZ(0);
-            transition: filter .2s;
-            user-select: none;
-            -webkit-user-select: none;
-            vertical-align: middle;
-            white-space: nowrap;
         }
-
-        button:after {
-            background-clip: padding-box;
-            background-color: #1CB0F6;
-            border: solid transparent;
-            border-radius: 16px;
-            border-width: 0 0 4px;
-            bottom: -4px;
-            content: "";
-            left: 0;
-            position: absolute;
-            right: 0;
-            top: 0;
-            z-index: -1;
-        }
-
-        button:main, button:focus {
-            user-select: auto;
-        }
-
-        button:hover:not(:disabled) {
+        button:hover {
             filter: brightness(1.1);
         }
-
-        button:disabled {
-            cursor: auto;
-        }
-
-        button:active:after {
-            border-width: 0 0 0px;
-        }
-
         button:active {
             padding-bottom: 10px;
         }
@@ -88,7 +44,7 @@
             border-radius: 4px;
             margin-bottom: 20px;
             overflow: hidden;
-            display: none; /* Initially hidden */
+            display: none;
         }
         #loadingBar {
             width: 0;
@@ -97,14 +53,20 @@
             transition: width 0.3s ease;
         }
         #visitorCounter {
-            margin-top: 20px;
-            font-size: 16px;
-            color: #333;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(125, 125, 255, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <h1>Link Converter</h1>
+
+    <p id="visitorCounter">Loading visitor count...</p>
 
     <p>FuckingFast Link Grabber is a tool designed to quickly extract and convert URLs into direct download links, streamlining the process of accessing content from various sources.</p>
 
@@ -121,29 +83,26 @@
     <button onclick="convertLinks()">Convert Links</button>
     <button onclick="copyOutput()">Copy Output</button>
 
-    <!-- Visitor Counter Display -->
-    <div id="visitorCounter"></div>
-
     <script>
-        // Function to update the visitor count
-        function updateVisitorCount() {
-            if (typeof(Storage) !== "undefined") {
-                let visitCount = localStorage.getItem('page_view');
-                if (visitCount) {
-                    visitCount = Number(visitCount) + 1;
-                } else {
-                    visitCount = 1;
-                }
-                localStorage.setItem('page_view', visitCount);
-                document.getElementById('visitorCounter').innerText = `You have visited this page ${visitCount} time(s).`;
+        // Visitor counter simulation
+        function updateVisitorCounter() {
+            const counterElement = document.getElementById('visitorCounter');
+            let count = localStorage.getItem('visitorCount');
+
+            if (!count) {
+                count = 1;
             } else {
-                document.getElementById('visitorCounter').innerText = "Sorry, your browser does not support web storage...";
+                count = parseInt(count) + 1;
             }
+
+            localStorage.setItem('visitorCount', count);
+            counterElement.textContent = `Website Visitors: ${count}`;
         }
 
-        // Call the function to update and display the visitor count
-        updateVisitorCount();
+        // Run visitor counter update
+        updateVisitorCounter();
 
+        // Link conversion functionality
         async function convertLinks() {
             const inputBox = document.getElementById('inputBox');
             const outputBox = document.getElementById('outputBox');
@@ -204,7 +163,7 @@
     </script>
 
     <footer>
-        <p>Developed by <a href="https://github.com/kalpvrux" target="_blank">Kalp Vrux 327</a></p>
+        <p>Developed by <a style="color: #00CEC8;">Kalp Vrux 327</a></p>
     </footer>
 </body>
 </html>
