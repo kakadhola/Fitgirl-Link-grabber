@@ -28,7 +28,7 @@
             cursor: pointer;
             font-size: 15px;
             font-weight: 700;
-            margin: 0;
+            margin: 5px;
             padding: 13px 19px;
             text-transform: uppercase;
         }
@@ -66,12 +66,12 @@
 <body>
     <h1>Link Converter</h1>
 
-    <p id="visitorCounter">Loading visitor count...</p>
+    <p id="visitorCounter">Website Visitors: {{ visitor_count }}</p>
 
     <p>FuckingFast Link Grabber is a tool designed to quickly extract and convert URLs into direct download links, streamlining the process of accessing content from various sources.</p>
 
     <label for="inputBox">Input URLs (one per line):</label>
-    <textarea id="inputBox" placeholder="Paste all fucking fast URLs here..."></textarea>
+    <textarea id="inputBox" placeholder="Paste all FuckingFast URLs here..."></textarea>
 
     <div id="loadingBarContainer">
         <div id="loadingBar"></div>
@@ -84,25 +84,6 @@
     <button onclick="copyOutput()">Copy Output</button>
 
     <script>
-        // Visitor counter simulation
-        function updateVisitorCounter() {
-            const counterElement = document.getElementById('visitorCounter');
-            let count = localStorage.getItem('visitorCount');
-
-            if (!count) {
-                count = 1;
-            } else {
-                count = parseInt(count) + 1;
-            }
-
-            localStorage.setItem('visitorCount', count);
-            counterElement.textContent = `Website Visitors: ${count}`;
-        }
-
-        // Run visitor counter update
-        updateVisitorCounter();
-
-        // Link conversion functionality
         async function convertLinks() {
             const inputBox = document.getElementById('inputBox');
             const outputBox = document.getElementById('outputBox');
