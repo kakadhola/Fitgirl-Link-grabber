@@ -2,10 +2,28 @@ from flask import Flask, render_template, request, jsonify
 import requests
 from bs4 import BeautifulSoup
 import re
+import os
 
 app = Flask(__name__)
 
-# Function to extract direct link from a given Fuckingfast URL
+COUNTER_FILE = "counter.txt"  # File to store visitor count
+
+# Function to read the visitor count from a file
+def read_visitor_count():
+    if not os.path.exists(COUNTER_FILE):
+        with open(COUNTER_FILE, "w") as f:
+            f.write("0")  # Initialize the counter file if not exists
+    with open(COUNTER_FILE, "r") as f:
+        return int(f.read().strip())
+
+# Function to increment and save the visitor count
+def increment_visitor_count():
+    count = read_visitor_count() + 1
+    with open(COUNTER_FILE, "w") as f:
+        f.write(str(count))
+    return count
+
+# Function to extract direct link from a given URL
 def get_direct_download_link(url):
     try:
         headers = {
@@ -19,7 +37,6 @@ def get_direct_download_link(url):
 
         for script in script_tags:
             if script.string:
-                print(f"Script Content: {script.string[:200]}...")  # Debugging output
                 match = re.search(r'https://fuckingfast\.co/dl[^"]+', script.string)
                 if match:
                     return match.group(0).replace('\\', '')
@@ -30,20 +47,26 @@ def get_direct_download_link(url):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    visitor_count = increment_visitor_count()  # Increment visitor count
+    return render_template('index.html', visitor_count=visitor_count)
 
 @app.route('/process', methods=['POST'])
 def process():
-    data = request.json
-    urls = data.get('urls', [])
-    results = []
-    for url in urls:
-        direct_link = get_direct_download_link(url)
-        if direct_link:
-            results.append(direct_link)
-        else:
-            results.append(f"No direct link found for {url}")
-    return jsonify(results=results)
+    try:
+        data = request.json
+        urls = data.get('urls', [])
+        results = []
+
+        for url in urls:
+            direct_link = get_direct_download_link(url)
+            if direct_link:
+                results.append(direct_link)
+            else:
+                results.append(f"No direct link found for {url}")
+
+        return jsonify(results=results)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
