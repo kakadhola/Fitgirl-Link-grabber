@@ -2,6 +2,14 @@
 
 An automated tool to extract direct download links from Fitgirl-Repacks "FuckingFast" landing pages. This tool simplifies the process of grabbing multiple download parts for use with download managers like `aria2c` or `wget`.
 
+## About
+**Fitgirl Link Grabber** was created to solve the tedious process of manually clicking through multiple "FuckingFast" landing pages to get direct download links. When downloading large repacks (often consisting of 50+ parts), this tool automates the extraction by:
+- Simulating a browser request to bypass basic landing page checks.
+- Regex-parsing the internal scripts where the direct `dl` URLs are generated.
+- Providing a unified interface to collect all links in seconds.
+
+This is particularly useful for users running headless setups (like a Raspberry Pi or Home Server) where a standard web browser isn't available to manually click through ads.
+
 ## Features
 - **Landing Page Parsing:** Automatically extracts direct `dl` links from FuckingFast landing pages.
 - **Batch Processing:** Processes multiple URLs in one go.
@@ -45,3 +53,6 @@ You can use a script to grab links and pipe them directly to a download manager:
 
 ## License
 MIT
+
+## Disclaimer
+This tool is for educational and personal use only. The author does not condone or encourage piracy. Always support game developers by purchasing their products if you enjoy them. Use this tool responsibly and in compliance with the terms of service of the websites it interacts with.
