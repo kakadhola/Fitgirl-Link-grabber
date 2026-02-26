@@ -1,6 +1,6 @@
 # Fitgirl Link Grabber
 
-![Website Screenshot](screenshot.png)
+![Demo](demo.gif)
 
 An automated tool to extract direct download links from Fitgirl-Repacks "FuckingFast" landing pages.
  This tool simplifies the process of grabbing multiple download parts for use with download managers like `aria2c` or `wget`.
